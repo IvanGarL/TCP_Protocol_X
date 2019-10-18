@@ -15,7 +15,7 @@ class GLOBALES:
     nombreArchivo = ""
     HOST = ''
     PORT = 0
-    f = open('./archivos/default.txt', 'wb')
+    f = None
     sel = selectors.DefaultSelector()
     received = False
 

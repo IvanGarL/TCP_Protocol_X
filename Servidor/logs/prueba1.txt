@@ -2,4 +2,8 @@ Fecha: 30/09/19 Hora: 02:02:17
 Nombre Archivo: medium data.zip Tamaño: 141547.0576171875 KB
 Cliente: 51996Fecha: 30/09/19 Hora: 07:04:05
 Nombre Archivo: medium data.zip Tamaño: 141547.0576171875 KB
-Cliente: 52195
+Cliente: 52195Date: 18/10/19 Time: 08:07:48
+File name: Fis_1.pdf File size: 0.1298828125 KB
+Client: 58838
+Tiempo de Transferencia: 0.001603841781616211 Seg
+Envio Exitoso: Si

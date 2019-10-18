@@ -110,7 +110,8 @@ def service_connection(key, mask, cliente):
 
 iniciar_server()
 while True:
-    events = GLOBALES.sel.select(timeout=None)
+    try:
+    	events = GLOBALES.sel.select(timeout=None)
     for key, mask in events:
         if key.data is None:
             print("New Connection")
