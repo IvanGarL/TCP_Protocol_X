@@ -110,38 +110,41 @@ def service_connection(key, mask, cliente):
 
 iniciar_server()
 while True:
-    events = GLOBALES.sel.select(timeout=None)
-    for key, mask in events:
-        if key.data is None:
-            print("New Connection")
-            accept_wrapper(key.fileobj)
-            GLOBALES.indexArchivo += 1
-        else:
-            id = int(str(key.data.addr).split(",")[1].split(")")[0])
-            cliente = {}
-            for i in range(len(GLOBALES.clientes)):
-                if GLOBALES.clientes[i]['id'] == id:
-                    cliente = GLOBALES.clientes[i]
-                    break
-            if GLOBALES.cantidadClientes == GLOBALES.clientesListos:
-                if cliente['received'] is not True and cliente['handShakeReceived']:
-                    key.data.outb = b'nombre:'+GLOBALES.nombreArchivo.encode('utf-8')+b',tamanno:'+bytearray(struct.pack("f",GLOBALES.tamannoArchivo))
-                    service_connection(key, mask, cliente)
-                    t.sleep(0.2)
-
-                    tiempo_inicial = time()
-                    key.data.outb = GLOBALES.f.read()
-                    service_connection(key, mask, cliente)
-                    cliente['received'] = True
-                    key.data.outb = b''
-                    GLOBALES.f.seek(0)
-
-                    #Logs
-                    GLOBALES.fileLogs = open('./logs/prueba' + str(cliente['idLogs']) + '.txt', "a+")
-                    GLOBALES.fileLogs.write('Date: ' + t.strftime("%d/%m/%y") + ' Time: ' + t.strftime("%I:%M:%S"))
-                    GLOBALES.fileLogs.write('\nFile name: ' + GLOBALES.nombreArchivo + ' File size: ' + str(4 * GLOBALES.tamannoArchivo) + ' KB')
-                    GLOBALES.fileLogs.write('\nClient: ' + str(cliente['id']))
-                    GLOBALES.fileLogs.close()
-                service_connection(key, mask, cliente)
+    try:
+        events = GLOBALES.sel.select(timeout=None)
+        for key, mask in events:
+            if key.data is None:
+                print("New Connection")
+                accept_wrapper(key.fileobj)
+                GLOBALES.indexArchivo += 1
             else:
-                service_connection(key, mask, cliente)
+                id = int(str(key.data.addr).split(",")[1].split(")")[0])
+                cliente = {}
+                for i in range(len(GLOBALES.clientes)):
+                    if GLOBALES.clientes[i]['id'] == id:
+                        cliente = GLOBALES.clientes[i]
+                        break
+                if GLOBALES.cantidadClientes == GLOBALES.clientesListos:
+                    if cliente['received'] is not True and cliente['handShakeReceived']:
+                        key.data.outb = b'nombre:'+GLOBALES.nombreArchivo.encode('utf-8')+b',tamanno:'+bytearray(struct.pack("f",GLOBALES.tamannoArchivo))
+                        service_connection(key, mask, cliente)
+                        t.sleep(0.2)
+
+                        tiempo_inicial = time()
+                        key.data.outb = GLOBALES.f.read()
+                        service_connection(key, mask, cliente)
+                        cliente['received'] = True
+                        key.data.outb = b''
+                        GLOBALES.f.seek(0)
+
+                        #Logs
+                        GLOBALES.fileLogs = open('./logs/prueba' + str(cliente['idLogs']) + '.txt', "a+")
+                        GLOBALES.fileLogs.write('Date: ' + t.strftime("%d/%m/%y") + ' Time: ' + t.strftime("%I:%M:%S"))
+                        GLOBALES.fileLogs.write('\nFile name: ' + GLOBALES.nombreArchivo + ' File size: ' + str(4 * GLOBALES.tamannoArchivo) + ' KB')
+                        GLOBALES.fileLogs.write('\nClient: ' + str(cliente['id']))
+                        GLOBALES.fileLogs.close()
+                    service_connection(key, mask, cliente)
+                else:
+                    service_connection(key, mask, cliente)
+    except Exception:
+        GLOBALES.sel.close
